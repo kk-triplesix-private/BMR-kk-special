@@ -180,6 +180,85 @@ sealed class IPCProvider : IDisposable
 
         Register("AI.SetPreset", (string name) => ai.SetAIPreset(autorotation.Database.Presets.AllPresets.FirstOrDefault(x => x.Name.Trim().Equals(name.Trim(), StringComparison.OrdinalIgnoreCase))));
         Register("AI.GetPreset", () => ai.GetAIPreset);
+
+        // --- Custom IPC: expose AIHints mechanic data for external consumers (e.g. RSR) ---
+
+        // Returns JSON array of predicted damage events: [{ "Players": <ulong bitmask>, "Activation": <ISO8601>, "Type": "Raidwide"|"Tankbuster"|"Shared"|"None" }, ...]
+        Register("Hints.PredictedDamage", () =>
+        {
+            var list = autorotation.Hints.PredictedDamage;
+            if (list.Count == 0)
+                return "[]";
+            var arr = new JsonArray();
+            foreach (var d in list)
+            {
+                arr.Add(new JsonObject
+                {
+                    ["Players"] = d.Players.Raw,
+                    ["Activation"] = d.Activation.ToString("o"),
+                    ["Type"] = d.Type.ToString()
+                });
+            }
+            return arr.ToJsonString();
+        });
+
+        // Simple convenience: is a raidwide predicted within the next N seconds (default 5)?
+        Register("Hints.IsRaidwideImminent", (float seconds) =>
+        {
+            var deadline = DateTime.Now.AddSeconds(seconds);
+            foreach (var d in autorotation.Hints.PredictedDamage)
+                if (d.Type == AIHints.PredictedDamageType.Raidwide && d.Activation <= deadline)
+                    return true;
+            return false;
+        });
+
+        // Simple convenience: is a tankbuster predicted within the next N seconds?
+        Register("Hints.IsTankbusterImminent", (float seconds) =>
+        {
+            var deadline = DateTime.Now.AddSeconds(seconds);
+            foreach (var d in autorotation.Hints.PredictedDamage)
+                if (d.Type == AIHints.PredictedDamageType.Tankbuster && d.Activation <= deadline)
+                    return true;
+            return false;
+        });
+
+        // Simple convenience: is a shared/stack predicted within the next N seconds?
+        Register("Hints.IsSharedImminent", (float seconds) =>
+        {
+            var deadline = DateTime.Now.AddSeconds(seconds);
+            foreach (var d in autorotation.Hints.PredictedDamage)
+                if (d.Type == AIHints.PredictedDamageType.Shared && d.Activation <= deadline)
+                    return true;
+            return false;
+        });
+
+        // Returns JSON array of forbidden directions: [{ "Center": <float rad>, "HalfWidth": <float rad>, "Activation": <ISO8601> }, ...]
+        Register("Hints.ForbiddenDirections", () =>
+        {
+            var list = autorotation.Hints.ForbiddenDirections;
+            if (list.Count == 0)
+                return "[]";
+            var arr = new JsonArray();
+            foreach (var (center, halfWidth, activation) in list)
+            {
+                arr.Add(new JsonObject
+                {
+                    ["Center"] = center.Rad,
+                    ["HalfWidth"] = halfWidth.Rad,
+                    ["Activation"] = activation.ToString("o")
+                });
+            }
+            return arr.ToJsonString();
+        });
+
+        // Returns the current special mode as string: "Normal", "Pyretic", "NoMovement", "Freezing", "Misdirection"
+        Register("Hints.SpecialMode", () => autorotation.Hints.ImminentSpecialMode.mode.ToString());
+
+        // Returns the activation time of the special mode (or DateTime.MaxValue if Normal)
+        Register("Hints.SpecialModeActivation", () =>
+            autorotation.Hints.ImminentSpecialMode.mode != AIHints.SpecialMode.Normal
+                ? autorotation.Hints.ImminentSpecialMode.activation.ToString("o")
+                : null);
     }
 
     public void Dispose() => _disposeActions?.Invoke();
