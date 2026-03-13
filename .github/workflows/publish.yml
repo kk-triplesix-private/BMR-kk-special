@@ -43,18 +43,18 @@ jobs:
             -p:FileVersion=${{ env.tag }} `
             -p:InformationalVersion=${{ env.tag }}
 
-      - name: Create Release Zip
+      - name: Find and zip release artifacts
         run: |
-          $outDir = "bin\Release\"
-          $files = @(
-            "$($outDir)BossModReborn.dll",
-            "$($outDir)BossModReborn.pdb",
-            "$($outDir)BossModReborn.json",
-            "$($outDir)DefaultRotationPresets.json",
-            "$($outDir)PInvoke.User32.dll",
-            "$($outDir)FFXIVClientStructs.dll"
-          )
-          $existing = $files | Where-Object { Test-Path $_ }
+          # Find the actual output directory containing BossModReborn.dll
+          $dll = Get-ChildItem -Recurse -Filter "BossModReborn.dll" -Path BossMod | Select-Object -First 1
+          if (-not $dll) { throw "BossModReborn.dll not found" }
+          $outDir = $dll.DirectoryName
+          Write-Host "Found output at: $outDir"
+          $names = @("BossModReborn.dll","BossModReborn.pdb","BossModReborn.json",
+                     "DefaultRotationPresets.json","PInvoke.User32.dll",
+                     "FFXIVClientStructs.dll")
+          $existing = $names | ForEach-Object { Join-Path $outDir $_ } | Where-Object { Test-Path $_ }
+          Write-Host "Zipping: $($existing -join ', ')"
           Compress-Archive -Path $existing -DestinationPath .\latest.zip
 
       - name: Create Release
