@@ -100,7 +100,7 @@
     <Copy SourceFiles="@(_PInvokeFromNuGet)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="CopyToDevPlugin" AfterTargets="CopyOnlyPInvoke">
+  <Target Name="CopyToDevPlugin" AfterTargets="CopyOnlyPInvoke" Condition="'$(CI)' != 'true'">
     <PropertyGroup>
       <DevPluginDir>$(appdata)\XIVLauncher\devPlugins\BossModReborn-Dev\</DevPluginDir>
     </PropertyGroup>
