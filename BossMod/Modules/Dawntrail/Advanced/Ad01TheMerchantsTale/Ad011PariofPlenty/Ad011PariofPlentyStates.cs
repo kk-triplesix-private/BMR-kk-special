@@ -21,6 +21,7 @@ sealed class PariOfPlentyStates : StateMachineBuilder
             .ActivateOnEnter<BurningPillar>()
             .ActivateOnEnter<FireWell>()
             .ActivateOnEnter<ScouringScorn>()
-            .ActivateOnEnter<FireFlightFactOrFiction>();
+            .ActivateOnEnter<FireFlightFactOrFiction>()
+            .ActivateOnEnter<FalseFlameDisplay>();
     }
 }
