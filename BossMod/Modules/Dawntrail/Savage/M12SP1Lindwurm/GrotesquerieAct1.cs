@@ -151,4 +151,37 @@ sealed class DirectedGrotesquerieAct1(BossModule module) : Components.GenericBai
         if (ActiveBaitsOn(actor).Count > 0)
             hints.Add("Bait away!", false);
     }
+
+    public override void AddAIHints(int slot, Actor actor, PartyRolesConfig.Assignment assignment, AIHints hints)
+    {
+        base.AddAIHints(slot, actor, assignment, hints);
+
+        // Find this actor's active bait and pending cone direction
+        var activeBaits = ActiveBaitsOn(actor);
+        if (activeBaits.Count == 0)
+            return;
+
+        var pendingIdx = _pending.FindIndex(p => p.Actor == actor);
+        if (pendingIdx < 0)
+            return;
+
+        var coneOffset = ((_pending[pendingIdx].DirectionExtra - ForwardDir) * -90f).Degrees();
+        var coneHalfAngle = 15f.Degrees();
+        var activation = activeBaits[0].Activation;
+
+        // For each party member: forbid facing directions where the cone would hit them
+        // Player faces D → cone fires at D + coneOffset
+        // Cone hits member at dirToMember if |dirToMember - (D + coneOffset)| < coneHalfAngle
+        // → forbidden D center = dirToMember - coneOffset
+        var members = Raid.WithoutSlot();
+        var len = members.Length;
+        for (var i = 0; i < len; ++i)
+        {
+            var member = members[i];
+            if (member.InstanceID == actor.InstanceID)
+                continue;
+            var dirToMember = Angle.FromDirection(member.Position - actor.Position);
+            hints.ForbiddenDirections.Add((dirToMember - coneOffset, coneHalfAngle, activation));
+        }
+    }
 }

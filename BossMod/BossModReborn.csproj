@@ -99,5 +99,21 @@
     </ItemGroup>
     <Copy SourceFiles="@(_PInvokeFromNuGet)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
   </Target>
-  
+
+  <Target Name="CopyToDevPlugin" AfterTargets="CopyOnlyPInvoke">
+    <PropertyGroup>
+      <DevPluginDir>$(appdata)\XIVLauncher\devPlugins\BossModReborn-Dev\</DevPluginDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <DevPluginFiles Include="$(OutputPath)BossModReborn.dll" />
+      <DevPluginFiles Include="$(OutputPath)BossModReborn.pdb" Condition="Exists('$(OutputPath)BossModReborn.pdb')" />
+      <!-- JSON nicht kopieren - devPlugin hat eigene [DEV]-Manifest -->
+      <DevPluginFiles Include="$(OutputPath)DefaultRotationPresets.json" Condition="Exists('$(OutputPath)DefaultRotationPresets.json')" />
+      <DevPluginFiles Include="$(OutputPath)PInvoke.User32.dll" Condition="Exists('$(OutputPath)PInvoke.User32.dll')" />
+      <DevPluginFiles Include="$(OutputPath)FFXIVClientStructs.dll" Condition="Exists('$(OutputPath)FFXIVClientStructs.dll')" />
+      <DevPluginFiles Include="$(OutputPath)FFXIVClientStructs.pdb" Condition="Exists('$(OutputPath)FFXIVClientStructs.pdb')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DevPluginFiles)" DestinationFolder="$(DevPluginDir)" SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>
