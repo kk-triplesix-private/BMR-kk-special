@@ -269,8 +269,7 @@ sealed class IPCProvider : IDisposable
             var arr = new JsonArray();
             foreach (var (oid, info) in BossModuleRegistry.RegisteredModules)
             {
-                if (info.Maturity < BossModuleInfo.Maturity.Contributed)
-                    continue; // Skip WIP modules
+                // Include all modules (WIP, Contributed, Verified, AISupport)
 
                 string bossName;
                 string groupName;
