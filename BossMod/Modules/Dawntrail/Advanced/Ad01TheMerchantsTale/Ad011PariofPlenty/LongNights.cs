@@ -58,7 +58,7 @@ sealed class WheelOfFireflight(BossModule module) : Components.GenericAOEs(modul
     }
     public override void OnEventCast(Actor caster, ActorCastEvent spell)
     {
-        if (spell.Action.ID is (uint)AID.WheelOfFireflight1 or (uint)AID.WheelOfFireflight2 or (uint)AID.WheelOfFireflight3)
+        if (spell.Action.ID is (uint)AID.WheelOfFireflight or (uint)AID.WheelOfFireflight1 or (uint)AID.WheelOfFireflight2 or (uint)AID.WheelOfFireflight3)
         {
             if (_aoes.Count > 0)
             {
