@@ -46,25 +46,67 @@ sealed class TidalSpout(BossModule module) : Components.StackWithCastTargets(mod
 sealed class Hydrobullet(BossModule module) : Components.SpreadFromCastTargets(module, (uint)AID.Hydrobullet, 15f)
 {
     private BitMask _targets = default;
+    private DateTime _activation = default;
     public override void OnCastStarted(Actor caster, ActorCastInfo spell)
     {
         if (spell.Action.ID == (uint)AID.Hydrobullet)
         {
             var slot = Raid.FindSlot(spell.TargetID);
+            if (slot == -1)
+                return;
+
+            var target = WorldState.Actors.Find(spell.TargetID);
+            if (target == null)
+                return;
+
             _targets.Set(slot);
+            _activation = Module.CastFinishAt(spell);
+            AddSpread(target, _activation);
         }
     }
     public override void AddHints(int slot, Actor actor, TextHints hints)
     {
         if (!_targets[slot])
             return;
-        base.AddHints(slot, actor, hints);
+
+        var spreads = CollectionsMarshal.AsSpan(ActiveSpreads);
+        var spreadLen = spreads.Length;
+        if (spreadLen == 0)
+            return;
+
+        var partyWS = Raid.WithSlot(false, true, true);
+        var partylen = partyWS.Length;
+        for (var i = 0; i < partylen; i++)
+        {
+            var playerSlot = partyWS[i].Item1;
+            if (!_targets[playerSlot] || slot == playerSlot)
+                continue;
+
+            var player = partyWS[i].Item2;
+            hints.Add("Spread!", actor.DistanceToPoint(player.Position) <= SpreadRadius);
+        }
     }
     public override void AddAIHints(int slot, Actor actor, PartyRolesConfig.Assignment assignment, AIHints hints)
     {
         if (!_targets[slot])
             return;
-        base.AddAIHints(slot, actor, assignment, hints);
+
+        var spreads = CollectionsMarshal.AsSpan(ActiveSpreads);
+        var spreadLen = spreads.Length;
+        if (spreadLen == 0)
+            return;
+
+        var partyWS = Raid.WithSlot(false, true, true);
+        var partylen = partyWS.Length;
+        for (var i = 0; i < partylen; i++)
+        {
+            var playerSlot = partyWS[i].Item1;
+            if (!_targets[playerSlot] || slot == playerSlot)
+                continue;
+
+            var player = partyWS[i].Item2;
+            hints.AddForbiddenZone(new AOEShapeCircle(SpreadRadius), player.Position, activation: _activation);
+        }
     }
 
     public override void DrawArenaForeground(int pcSlot, Actor pc)
@@ -78,6 +120,7 @@ sealed class Hydrobullet(BossModule module) : Components.SpreadFromCastTargets(m
         if (spell.Action.ID == (uint)AID.Hydrobullet)
         {
             _targets.Reset();
+            _activation = default;
         }
         base.OnCastFinished(caster, spell);
     }

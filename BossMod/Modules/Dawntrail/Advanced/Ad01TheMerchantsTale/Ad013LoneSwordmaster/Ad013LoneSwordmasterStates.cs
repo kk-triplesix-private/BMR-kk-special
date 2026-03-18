@@ -20,6 +20,7 @@ sealed class Ad013LoneSwordmasterStates : StateMachineBuilder
             .ActivateOnEnter<StingOfTheScorpion>()
             .ActivateOnEnter<MaleficAlignment>()
             .ActivateOnEnter<WillOfTheUnderworld>()
+            .ActivateOnEnter<WillOfTheUnderworld1>()
             .ActivateOnEnter<WaitingWounds>()
             .ActivateOnEnter<SilentEight>()
             .ActivateOnEnter<SteelsbreathReleaseArena>()

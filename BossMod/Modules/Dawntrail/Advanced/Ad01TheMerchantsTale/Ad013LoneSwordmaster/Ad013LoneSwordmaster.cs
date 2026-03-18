@@ -480,9 +480,9 @@ sealed class MaleficAlignment(BossModule module) : Components.SimpleAOEs(module,
         return CollectionsMarshal.AsSpan(unsafeAoes);
     }
 }
+/*
 sealed class WillOfTheUnderworld(BossModule module) : Components.SimpleAOEs(module, (uint)AID.WillOfTheUnderworld, new AOEShapeRect(40f, 10f))
 {
-    // happens at same time as echoing hush baited puddles
     private readonly DebuffTracker _debuffs = module.FindComponent<DebuffTracker>()!;
     public override ReadOnlySpan<AOEInstance> ActiveAOEs(int slot, Actor actor)
     {
@@ -515,6 +515,43 @@ sealed class WillOfTheUnderworld(BossModule module) : Components.SimpleAOEs(modu
         return CollectionsMarshal.AsSpan(unsafeAoes);
     }
 }
+*/
+class GenericWillUnderworld(BossModule module, uint aid, AOEShape shape) : Components.SimpleAOEs(module, aid, shape)
+{
+    private readonly DebuffTracker _debuffs = module.FindComponent<DebuffTracker>()!;
+    public override ReadOnlySpan<AOEInstance> ActiveAOEs(int slot, Actor actor)
+    {
+        var count = Casters.Count;
+        if (count == 0)
+        {
+            return [];
+        }
+
+        List<AOEInstance> unsafeAoes = [];
+        var angles = _debuffs.GetUnsafeAngles(slot);
+        var angleLen = angles.Length;
+
+        var aoes = CollectionsMarshal.AsSpan(Casters);
+        var len = aoes.Length;
+        for (var i = 0; i < len; ++i)
+        {
+            var aoe = aoes[i];
+
+            for (var j = 0; j < angleLen; j++)
+            {
+                // roughly 1deg, unnecessary? actor angle seems equal to Angle.Cardinal
+                if (aoe.Rotation.AlmostEqual(angles[j], 0.02f))
+                {
+                    unsafeAoes.Add(aoe);
+                }
+            }
+        }
+
+        return CollectionsMarshal.AsSpan(unsafeAoes);
+    }
+}
+sealed class WillOfTheUnderworld(BossModule module) : GenericWillUnderworld(module, (uint)AID.WillOfTheUnderworld, new AOEShapeRect(40f, 10f));
+sealed class WillOfTheUnderworld1(BossModule module) : GenericWillUnderworld(module, (uint)AID.WillOfTheUnderworld1, new AOEShapeRect(40f, 5f));
 sealed class SilentEight(BossModule module) : Components.GenericBaitAway(module)
 {
     // 8f circle AOE followed up echoing eight at player locations

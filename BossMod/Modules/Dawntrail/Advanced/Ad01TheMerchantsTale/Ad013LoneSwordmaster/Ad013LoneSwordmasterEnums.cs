@@ -66,7 +66,7 @@ public enum AID : uint
     SteelsbreathReleaseArena = 46681, // LoneSwordmaster->self, 5.0s cast, range 60 circle
     _Weaponskill_VanishingHorizon = 46682, // LoneSwordmaster->self, 4.0s cast, single-target
     _Weaponskill_SteelsbreathBonds = 46684, // LoneSwordmaster->self, no cast, single-target
-    _Weaponskill_WillOfTheUnderworld1 = 46683, // 4B18->self, 6.0s cast, range 40 width 10 rect
+    WillOfTheUnderworld1 = 46683, // 4B18->self, 6.0s cast, range 40 width 10 rect
 }
 public enum SID : uint
 {

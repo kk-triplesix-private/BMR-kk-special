@@ -54,6 +54,7 @@ public enum AID : uint
     _Ability_AlluringOrder = 47090, // DaryaTheSeaMaid->self, 4.0s cast, range 70 circle
     _Spell_AquaBall = 45834, // DaryaTheSeaMaid->self, 2.0+1.0s cast, single-target
     AquaBall = 45835, // Helper->location, 3.0s cast, range 5 circle
+    _Spell_RecedingTwinTides = 45828, // DaryaTheSeaMaid->self, 3.0+1.0s cast, single-target
     _Spell_EncroachingTwinTides = 45831, // DaryaTheSeaMaid->self, 3.0+1.0s cast, single-target
     NearTide = 45829, // Helper->location, 4.0s cast, range 10 circle
     NearTide1 = 45830, // Helper->location, no cast, range 10 circle
