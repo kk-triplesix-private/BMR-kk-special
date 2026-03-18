@@ -1,4 +1,4 @@
-﻿namespace BossMod.Dawntrail.Advanced.AV1MerchantsTale.Ad012DaryaTheSeamaid;
+﻿namespace BossMod.Dawntrail.Advanced.Ad01TheMerchantsTale.Ad012DaryaTheSeamaid;
 
 sealed class SeaShackles(BossModule module) : Components.StretchTetherDuo(module, 25f, 30d, (uint)TetherID.TetherBad, (uint)TetherID.TetherGood)
 {

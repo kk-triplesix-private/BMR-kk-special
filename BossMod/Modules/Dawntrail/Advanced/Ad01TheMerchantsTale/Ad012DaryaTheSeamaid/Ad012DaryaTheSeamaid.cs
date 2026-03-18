@@ -1,4 +1,4 @@
-﻿namespace BossMod.Dawntrail.Advanced.AV1MerchantsTale.Ad012DaryaTheSeamaid;
+﻿namespace BossMod.Dawntrail.Advanced.Ad01TheMerchantsTale.Ad012DaryaTheSeamaid;
 
 sealed class PiercingPlunge(BossModule module) : Components.RaidwideCast(module, (uint)AID.PiercingPlunge);
 sealed class SurgingCurrent(BossModule module) : Components.SimpleAOEs(module, (uint)AID.SurgingCurrent, new AOEShapeCone(60f, 45f.Degrees()));

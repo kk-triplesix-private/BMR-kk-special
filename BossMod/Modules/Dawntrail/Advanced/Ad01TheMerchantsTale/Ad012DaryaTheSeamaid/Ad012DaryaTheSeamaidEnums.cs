@@ -1,4 +1,4 @@
-﻿namespace BossMod.Dawntrail.Advanced.AV1MerchantsTale.Ad012DaryaTheSeamaid;
+﻿namespace BossMod.Dawntrail.Advanced.Ad01TheMerchantsTale.Ad012DaryaTheSeamaid;
 
 public enum OID : uint
 {
