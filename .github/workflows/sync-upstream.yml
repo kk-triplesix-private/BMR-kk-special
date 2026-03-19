@@ -43,6 +43,12 @@ jobs:
         run: |
           # Merge with ours strategy for conflicts = our changes win
           if git merge upstream/main -m "Merge upstream changes" --strategy-option ours; then
+            # Restore our workflow files so we never push upstream workflow changes
+            # (GITHUB_TOKEN can't push workflow changes, and we don't want them anyway)
+            git checkout HEAD^1 -- .github/workflows/ 2>/dev/null || true
+            if ! git diff --staged --quiet; then
+              git commit --amend --no-edit
+            fi
             echo "status=success" >> "$GITHUB_OUTPUT"
           else
             # If merge still fails, abort and notify
