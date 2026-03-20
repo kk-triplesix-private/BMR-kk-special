@@ -3,28 +3,26 @@
 public enum OID : uint {
     DaryaTheSeaMaid = 0x4A99, // R5.000, x1
     Helper = 0x233C, // R0.500, x35, Helper type
-    
     SeabornSteed = 0x4A9A, // R2.200, x0 (spawn during fight)
     SeabornShrike = 0x4A9E, // R1.600, x0 (spawn during fight)
     SeabornSoldier = 0x4A9C, // R2.200, x0 (spawn during fight)
     SeabornServant = 0x4A9D, // R1.600, x0 (spawn during fight)
     SeabornSteward = 0x4A9B, // R2.200, x0 (spawn during fight)
-    
     BlueOrb = 0x1EBF1B, // R0.500, x0 (spawn during fight), EventObj type
     BlueSphere = 0x1EBF1C,// R0.500, x0 (spawn during fight), EventObj type
     DonutSphere = 0x1EBF1D, // R0.500, x0 (spawn during fight), EventObj type
-    
-    _Gen_Actor1e8536 = 0x1E8536, // R2.000, x1, EventObj type
-    _Gen_Actor1e8f2f = 0x1E8F2F, // R0.500, x1, EventObj type
-    _Gen_Shortcut = 0x1E873C, // R0.500, x1, EventObj type
-    _Gen_Actor1ea1a1 = 0x1EA1A1, // R2.000, x1, EventObj type
-    _Gen_AetherialFlow = 0x1EBFA6, // R2.000, x1, EventObj type
-    _Gen_Actor1ebf48 = 0x1EBF48, // R0.500, x1, EventObj type
+    WaterTile = 0x1EBF1E, // R0.500, x0 (spawn during fight), EventObj type - bad tile
+}
+
+public enum STATE : uint { // States for BlueSphere & DonutSphere
+    FirstState = 1048608, 
+    SecondState = 4194432,
+    ThirdState = 262152,
 }
 
 public enum AID : uint {
-    _AutoAttack_ = 45838, // DaryaTheSeaMaid->player, no cast, single-target
-    _Ability_ = 45770, // DaryaTheSeaMaid->location, no cast, single-target
+    AutoAttack = 45838, // DaryaTheSeaMaid->player, no cast, single-target
+    Ability = 45770, // DaryaTheSeaMaid->location, no cast, single-target
     
     PiercingPlunge = 45870, // DaryaTheSeaMaid->self, 5.0s cast, range 70 circle
 
@@ -64,24 +62,38 @@ public enum AID : uint {
     AquaBall = 45867, // Boss->self, 2.0+1.0s cast, single-target
     AquaBall1 = 45868, // Helper->location, 3.0s cast, range 5 circle
     
-    _Spell_ = 45859, // Helper->player, 6.0s cast, single-target
-    _Spell_SphereShatter = 45850, // Helper->self, no cast, range 18 circle
-    _Spell_SphereShatter1 = 45851, // Helper->self, no cast, range ?-20 donut
+    Spell = 45859, // Helper->player, 6.0s cast, single-target
+    SphereShatter = 45850, // Helper->self, no cast, range 18 circle
+    SphereShatter1 = 45851, // Helper->self, no cast, range ?-20 donut
+    
+    SeaShackles = 45856, // DaryaTheSeaMaid->self, 4.0+1.0s cast, range 70 circle
+    Hydrobullet2 = 47088, // Helper->players, no cast, range 15 circle
+    Explosion = 45857, // Helper->player, no cast, single-target
+    
+    PiercingPlungeEnrage = 45872, // Boss->self, 10.0s cast, range 70 circle
+    PiercingPlungeEnrage1 = 45873, // Boss->self, no cast, range 70 circle
 }
 
 public enum SID : uint {
+    ForcedMarch = 1257, // none->player, extra=0x1/0x2/0x8
     ForwardMarch = 2161, // none->player, extra=0x0
     AboutFace = 2162, // none->player, extra=0x0
     LeftFace = 2163, // none->player, extra=0x0
     RightFace = 2164, // none->player, extra=0x0
-    
     TidalspoutTarget = 4726, // none->player, extra=0x0
-    
-    _Gen_MagicVulnerabilityUp = 2941, // Helper->player, extra=0x0
-    _Gen_DamageDown = 2911, // 4A9A/4A9C->player, extra=0x0
-    _Gen_ForcedMarch = 1257, // none->player, extra=0x1/0x2/0x8
+    NearShoreShackles = 4724, // none->player, extra=0x0
+    FarShoreShackles = 4725, // none->player, extra=0x0
+    HydrobulletTarget = 4968, // none->player, extra=0x0
 }
 
 public enum IconID : uint {
     CrossCurrent = 20, // player->self
+    Hydrobullet = 22, // player->self
+    YellowTile = 185, // player->self
+}
+
+public enum TetherID : uint {
+    Far = 129, // player->player
+    Near = 130, // player->player
+    Safe = 3, // player->player
 }

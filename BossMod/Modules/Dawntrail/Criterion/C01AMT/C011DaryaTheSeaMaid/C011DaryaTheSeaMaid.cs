@@ -1,34 +1,37 @@
 ﻿namespace BossMod.Dawntrail.Criterion.C01AMT.C011DaryaTheSeaMaid;
 
 // TODO (in-order of priority):
-//  - Implement Sea Shackles mechanic - Need to find a RP of how this works - currently people just skip it
-//  - Improve timeline of fight (80% completed) - Just missing a couple of ones like AquaDropPuddles
-//      - Watch a full reply and if something is going off which is not given in the timeline add it
 //  - Improve visual for CrossCurrent
 //  - Add priority order to Tidalspout mechanic - DPS flex, but add configuration to module so it can be picked by the player
-//  - Rewrite AquaSpear code (mechanic works fine) - Remove grid map or improve it
-//  - Rewrite SunkenTreasure code (mechanic works fine)
-//      - Can just build a list and add them in order and on spell cast event remove it from the list
-//      - instead of tracking everytime eAnim happens
-//  - Clean up enums class
+//  - Rewrite AquaSpear code (mechanic works fine) - Remove grid map or improve it - can use WaterTile OID 
 
 class PiercingPlunge(BossModule module) : Components.RaidwideCast(module, (uint)AID.PiercingPlunge);
 
-class SurgingCurrent(BossModule module)
-    : Components.SimpleAOEs(module, (uint)AID.SurgingCurrent1, new AOEShapeCone(60f, 45.Degrees())) {
+class SurgingCurrent(BossModule module) : Components.SimpleAOEs(module, (uint)AID.SurgingCurrent1, new AOEShapeCone(60f, 45.Degrees())) {
     private List<AOEInstance> aoes = [];
+    public int maxShow = 2;
     
     public override ReadOnlySpan<AOEInstance> ActiveAOEs(int slot, Actor actor) {
         aoes.Clear();
         
         int show = 0;
         foreach (var caster in Casters) {
+            if (show >= maxShow) {
+                break;
+            }
+            
             uint colour = (show < 2) ? Colors.Danger : Colors.AOE;
             aoes.Add(new(caster.Shape, caster.Origin, caster.Rotation, caster.Activation, colour, (show < 2)));
             show++;
         }
         
         return CollectionsMarshal.AsSpan(aoes);
+    }
+}
+
+class SurgingCurrent2 : SurgingCurrent {
+    public SurgingCurrent2(BossModule module) : base(module) {
+        maxShow = 2;
     }
 }
 
@@ -73,14 +76,14 @@ class AquaBall(BossModule module) : Components.SimpleAOEs(module, (uint)AID.Aqua
     StatesType = typeof(DaryaTheSeaMaidStates),
     ConfigType = null, // replace null with typeof(DaryaTheSeaMaidConfig) if applicable
     ObjectIDType = typeof(OID),
-    ActionIDType = typeof(AID),
-    StatusIDType = typeof(SID),
+    ActionIDType = null, // replace null with typeof(AID) if applicable
+    StatusIDType = null, // replace null with typeof(SID) if applicable
     TetherIDType = null, // replace null with typeof(TetherID) if applicable
-    IconIDType = typeof(IconID),
+    IconIDType = null, // replace null with typeof(IconID) if applicable
     PrimaryActorOID = (uint)OID.DaryaTheSeaMaid,
     Contributors = "Equilius",
     Expansion = BossModuleInfo.Expansion.Dawntrail,
-    Category = BossModuleInfo.Category.VariantCriterion, // TODO update category
+    Category = BossModuleInfo.Category.VariantCriterion,
     GroupType = BossModuleInfo.GroupType.CFC,
     GroupID = 1079u,
     NameID = 14291u,
