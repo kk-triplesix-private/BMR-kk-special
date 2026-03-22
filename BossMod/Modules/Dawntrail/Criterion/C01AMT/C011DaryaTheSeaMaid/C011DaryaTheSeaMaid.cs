@@ -9,11 +9,12 @@ class PiercingPlunge(BossModule module) : Components.RaidwideCast(module, (uint)
 
 class SurgingCurrent(BossModule module) : Components.SimpleAOEs(module, (uint)AID.SurgingCurrent1, new AOEShapeCone(60f, 45.Degrees())) {
     private List<AOEInstance> aoes = [];
-    public int maxShow = 2;
+    public int maxShow = 4;
     
     public override ReadOnlySpan<AOEInstance> ActiveAOEs(int slot, Actor actor) {
         aoes.Clear();
         
+        Casters.Sort( (a, b) => a.Activation.CompareTo(b.Activation));
         int show = 0;
         foreach (var caster in Casters) {
             if (show >= maxShow) {

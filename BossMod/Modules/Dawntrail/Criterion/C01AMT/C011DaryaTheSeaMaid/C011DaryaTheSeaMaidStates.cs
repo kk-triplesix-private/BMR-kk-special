@@ -114,7 +114,7 @@ sealed class DaryaTheSeaMaidStates : StateMachineBuilder {
         ComponentCondition<EchoedSerenade>(id + 0x130, 3.1f, o => o.NumCasts > 1, "Second add");
         ComponentCondition<EchoedSerenade>(id + 0x140, 3.1f, o => o.NumCasts > 2, "Third add");
         ComponentCondition<EchoedSerenade>(id + 0x150, 3.1f, o => o.NumCasts > 3, "Fourth add")
-            .ActivateOnEnter<SurgingCurrent>()
+            .ActivateOnExit<SurgingCurrent>()
             .DeactivateOnExit<EchoedSerenade2>();
         ComponentCondition<SurgingCurrent>(id + 0x160, 5.9f, o => o.NumCasts >= 4, "SurgingCurrent")
             .DeactivateOnExit<SurgingCurrent>()
