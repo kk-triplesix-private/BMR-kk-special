@@ -30,29 +30,40 @@ jobs:
       - name: Fetch upstream
         run: git fetch upstream main
 
-      - name: Check for new upstream commits
+      - name: Check for upstream changes
         id: check
         run: |
-          BEHIND=$(git rev-list --count HEAD..upstream/main)
-          echo "behind=$BEHIND" >> "$GITHUB_OUTPUT"
-          echo "Upstream is $BEHIND commits ahead"
+          CHANGES=$(git diff HEAD upstream/main -- . ':!.github/workflows/' --stat)
+          if [ -z "$CHANGES" ]; then
+            echo "No upstream changes to sync"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Upstream has changes:"
+            echo "$CHANGES"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Merge upstream (keep our changes on conflict)
-        if: steps.check.outputs.behind != '0'
+      - name: Squash-merge upstream (exclude workflows, keep our changes on conflict)
+        if: steps.check.outputs.has_changes == 'true'
         id: merge
         run: |
-          # Merge with ours strategy for conflicts = our changes win
-          if git merge upstream/main -m "Merge upstream changes" --strategy-option ours; then
-            # Restore our workflow files so we never push upstream workflow changes
-            # (GITHUB_TOKEN can't push workflow changes, and we don't want them anyway)
-            git checkout HEAD^1 -- .github/workflows/ 2>/dev/null || true
+          # Squash-merge so upstream commits (which may touch workflow files) are
+          # not pushed into our history — GITHUB_TOKEN cannot push workflow changes
+          if git merge --squash --strategy-option ours upstream/main; then
+            # Remove any upstream workflow changes from staging — we keep our own
+            git reset -- .github/workflows/ 2>/dev/null || true
+            git checkout HEAD -- .github/workflows/ 2>/dev/null || true
+            git clean -fd -- .github/workflows/ 2>/dev/null || true
+
             if ! git diff --staged --quiet; then
-              git commit --amend --no-edit
+              git commit -m "Sync upstream changes"
+              echo "status=success" >> "$GITHUB_OUTPUT"
+            else
+              echo "No effective changes after excluding workflows"
+              echo "status=noop" >> "$GITHUB_OUTPUT"
             fi
-            echo "status=success" >> "$GITHUB_OUTPUT"
           else
-            # If merge still fails, abort and notify
-            git merge --abort
+            git reset --merge
             echo "status=conflict" >> "$GITHUB_OUTPUT"
           fi
 
