@@ -1,5 +1,6 @@
 ﻿using BossMod.AI;
 using BossMod.Autorotation;
+using BossMod.Pathfinding;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;

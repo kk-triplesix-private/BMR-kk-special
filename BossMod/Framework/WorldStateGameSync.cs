@@ -785,7 +785,7 @@ sealed class WorldStateGameSync : IDisposable
             _ws.Execute(new ClientState.OpActivePetChange(pet));
 
         var chocoinfo = uiState->Buddy.CompanionInfo;
-        var chocobo = new ClientState.Companion(chocoinfo.Companion->EntityId, chocoinfo.ActiveCommand, chocoinfo.TimeLeft);
+        var chocobo = new ClientState.Companion(chocoinfo.Companion->EntityId, chocoinfo.ActiveCommand, chocoinfo.TimeLeft, PlayerState.Instance()->IsPlayerStateFlagSet(PlayerStateFlag.IsBuddyInStable));
         if (_ws.Client.ActiveCompanion != chocobo)
             _ws.Execute(new ClientState.OpActiveCompanionChange(chocobo));
 
