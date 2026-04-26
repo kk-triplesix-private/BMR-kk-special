@@ -161,6 +161,18 @@ sealed class IPCProvider : IDisposable
             return float.MaxValue;
         });
 
+        Register("Hints.NextSharedDamageIn", () =>
+        {
+            var predicted = hints.PredictedDamage;
+            var now = DateTime.Now;
+            for (var i = 0; i < predicted.Count; ++i)
+            {
+                if (predicted[i].Type == AIHints.PredictedDamageType.Shared)
+                    return (float)(predicted[i].Activation - now).TotalSeconds;
+            }
+            return float.MaxValue;
+        });
+
         Register("Hints.SpecialModeIn", () =>
         {
             return hints.ImminentSpecialMode == default
