@@ -3,7 +3,7 @@
   "Name": "BMR (KK's Special)",
   "InternalName": "BossModReborn",
   "ApplicableVersion": "any",
-  "DalamudApiLevel": 14,
+  "DalamudApiLevel": 15,
   "Punchline": "KK's custom boss mod with extended IPC and RSR integration.",
   "Description": "Private fork of BossModReborn with extended IPC, custom modules, and RSR integration.",
   "RepoUrl": "https://github.com/kk-triplesix-private/BMR-kk-special",

@@ -334,7 +334,7 @@ sealed class ReplayDetailsWindow : UIWindow
         if (ImGui.IsItemHovered() && numRealStatuses + actor.PendingStatuses.Count + actor.PendingDispels.Count + numIncoming > 0)
         {
             using var tooltip = ImRaii.Tooltip();
-            if (tooltip)
+            if (tooltip.Alive)
             {
                 string fromString(string prefix, ulong instanceId) => instanceId == 0 ? "" : $", {prefix} {_player.WorldState.Actors.Find(instanceId)?.ToString() ?? instanceId.ToString("X")}";
                 var lenS = actor.Statuses.Length;

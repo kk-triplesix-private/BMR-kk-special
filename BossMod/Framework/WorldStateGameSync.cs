@@ -230,7 +230,7 @@ sealed class WorldStateGameSync : IDisposable
         ));
         if (_ws.CurrentZone != Service.ClientState.TerritoryType || _ws.CurrentCFCID != GameMain.Instance()->CurrentContentFinderConditionId)
         {
-            _ws.Execute(new WorldState.OpZoneChange(Service.ClientState.TerritoryType, GameMain.Instance()->CurrentContentFinderConditionId));
+            _ws.Execute(new WorldState.OpZoneChange((ushort)Service.ClientState.TerritoryType, GameMain.Instance()->CurrentContentFinderConditionId));
         }
         var proxy = fwk->NetworkModuleProxy->ReceiverCallback;
         var scramble = Network.IDScramble.Get();
