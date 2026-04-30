@@ -454,7 +454,7 @@ sealed class WorldStateGameSync : IDisposable
             {
                 ref var eff = ref aeh->IncomingEffects[i];
                 ref var prev = ref act.IncomingEffects[i];
-                if ((prev.GlobalSequence, prev.TargetIndex) != (eff.GlobalSequence != 0 ? (eff.GlobalSequence, eff.TargetIndex) : (0, 0)))
+                if ((prev.GlobalSequence, prev.TargetIndex) != (eff.GlobalSequence != 0 ? (eff.GlobalSequence, (int)eff.TargetIndex) : (0u, 0)))
                 {
                     var effects = new ActionEffects();
                     for (var j = 0; j < ActionEffects.MaxCount; ++j)

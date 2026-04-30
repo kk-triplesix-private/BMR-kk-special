@@ -114,8 +114,8 @@ class Replication1SecondBait(BossModule module) : BossComponent(module)
 
     readonly Assignment[] _assignments = new Assignment[8];
 
-    public record struct Clone(Actor Actor, Assignment Element);
-    public readonly List<Clone> Clones = [];
+    public record struct Clone1(Actor Actor, Assignment Element);
+    public readonly List<Clone1> Clones = [];
     public record struct FinalClone(Actor Actor, WPos Position, Assignment Element);
     public readonly List<FinalClone> FinalClones = [];
 
