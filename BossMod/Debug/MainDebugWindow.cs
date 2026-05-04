@@ -195,6 +195,33 @@ sealed class MainDebugWindow(WorldState ws, RotationModuleManager autorot, ZoneM
         {
             _debugTeleport.Draw();
         }
+        if (ImGui.CollapsingHeader("Rotation Solver Reborn"))
+        {
+            DrawRSR();
+        }
+    }
+
+    private void DrawRSR()
+    {
+        ImGui.TextUnformatted($"RSR installed: {rsr.IsInstalled}");
+        if (!rsr.IsInstalled)
+            return;
+        if (ImGui.Button("Pause (NoCasting)"))
+            rsr.PauseRSR();
+        ImGui.SameLine();
+        if (ImGui.Button("Unpause (EndSpecial)"))
+            rsr.UnPauseRSR();
+        ImGui.Separator();
+        ImGui.TextUnformatted("TriggerSpecialStateWithDuration:");
+        foreach (var cmd in Enum.GetValues<RotationSolverRebornModule.SpecialCommandType>())
+        {
+            if (cmd == RotationSolverRebornModule.SpecialCommandType.EndSpecial)
+                continue;
+            if (ImGui.Button($"{cmd}##rsr"))
+                rsr.TriggerSpecialStateWithDuration(cmd, 7f);
+            ImGui.SameLine();
+        }
+        ImGui.NewLine();
     }
 
     private unsafe void DrawStatuses()
