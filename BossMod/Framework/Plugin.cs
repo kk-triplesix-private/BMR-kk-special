@@ -99,7 +99,6 @@ public sealed class Plugin : IAsyncDalamudPlugin
 
         Service.Config.Modified.Subscribe(() => Task.Run(() => Service.Config.SaveToFile(_dalamud.ConfigFile)));
 
-        CommandManager = commandManager;
         CommandManager.AddHandler("/bmr", new CommandInfo(OnCommand) { HelpMessage = "Show BMR KK's Special settings UI" });
 
         ActionDefinitions.Instance.UnlockCheck = QuestUnlocked; // ensure action definitions are initialized and set unlock check functor (we don't really store the quest progress in clientstate, for now at least)
