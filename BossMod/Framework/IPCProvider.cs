@@ -1,4 +1,4 @@
-﻿using BossMod.AI;
+using BossMod.AI;
 using BossMod.Autorotation;
 using BossMod.Pathfinding;
 using System.IO;

@@ -24,7 +24,6 @@ sealed class MainDebugWindow(WorldState ws, RotationModuleManager autorot, ZoneM
     private readonly DebugAutorotation _debugAutorot = new(autorot);
     private readonly DebugAddon _debugAddon = new();
     private readonly DebugTiming _debugTiming = new();
-    private readonly DebugTeleport _debugTeleport = new();
     private readonly DebugCollision _debugCollision = new();
     private readonly DebugQuests _debugQuests = new();
 
@@ -191,10 +190,33 @@ sealed class MainDebugWindow(WorldState ws, RotationModuleManager autorot, ZoneM
         {
             _debugQuests.Draw();
         }
-        if (ImGui.CollapsingHeader("Teleport"))
+        if (ImGui.CollapsingHeader("Rotation Solver Reborn"))
         {
-            _debugTeleport.Draw();
+            DrawRSR();
         }
+    }
+
+    private void DrawRSR()
+    {
+        ImGui.TextUnformatted($"RSR installed: {rsr.IsInstalled}");
+        if (!rsr.IsInstalled)
+            return;
+        if (ImGui.Button("Pause (NoCasting)"))
+            rsr.PauseRSR();
+        ImGui.SameLine();
+        if (ImGui.Button("Unpause (EndSpecial)"))
+            rsr.UnPauseRSR();
+        ImGui.Separator();
+        ImGui.TextUnformatted("TriggerSpecialStateWithDuration:");
+        foreach (var cmd in Enum.GetValues<RotationSolverRebornModule.SpecialCommandType>())
+        {
+            if (cmd == RotationSolverRebornModule.SpecialCommandType.EndSpecial)
+                continue;
+            if (ImGui.Button($"{cmd}##rsr"))
+                rsr.TriggerSpecialStateWithDuration(cmd, 7f);
+            ImGui.SameLine();
+        }
+        ImGui.NewLine();
     }
 
     private unsafe void DrawStatuses()
